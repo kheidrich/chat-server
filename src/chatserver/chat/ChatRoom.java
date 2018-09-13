@@ -6,11 +6,9 @@ import java.util.ArrayList;
 
 public class ChatRoom {
     private ArrayList<User> users;
-    private MessageSender messageSender;
 
-    public ChatRoom(MessageSender messageSender) {
+    public ChatRoom() {
         this.users = new ArrayList<>();
-        this.messageSender = messageSender;
     }
 
     public void enter(User user) {
@@ -41,10 +39,5 @@ public class ChatRoom {
             if (u.getConnectionId() == id) return u;
 
         return null;
-    }
-
-    public void sendMessageToRoom(Message message) {
-        for (User u : this.users)
-            this.messageSender.sendMessage(u.getConnectionId(), message.toString());
     }
 }
