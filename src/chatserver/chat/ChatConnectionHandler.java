@@ -3,29 +3,41 @@ package chatserver.chat;
 import chatserver.command.*;
 import chatserver.util.SocketConnection;
 
+import java.util.List;
+
 public class ChatConnectionHandler implements Runnable {
     private SocketConnection connection;
-    private ChatCommandExecuterFactory commandExecuterFactory;
+    private ChatCommandHandlerFactory commandHandlerFactory;
+    private List<SocketConnection> activeConnections;
 
-    public ChatConnectionHandler(SocketConnection connection, ChatCommandExecuterFactory commandExecuterFactory) {
+    public ChatConnectionHandler(
+            SocketConnection connection,
+            ChatCommandHandlerFactory commandHandlerFactory,
+            List<SocketConnection> activeConnections
+    ) {
         this.connection = connection;
-        this.commandExecuterFactory = commandExecuterFactory;
+        this.commandHandlerFactory = commandHandlerFactory;
+        this.activeConnections = activeConnections;
     }
 
     @Override
     public void run() {
+        this.activeConnections.add(this.connection);
+
         while (this.connection.isConnected()) {
             if (this.connection.hasDataToReceive()) {
                 ChatCommand command;
-                EnterCommandExecuter enterCommand = commandExecuterFactory.createEnterCommandExecuter();
-                LeaveCommandExecuter leaveCommand = commandExecuterFactory.createLeaveCommandExecuter();
-                SendMessageCommandExecuter sendMessageCommand = commandExecuterFactory.createSendMessageCommandExecuter();
+                EnterCommandHandler enterCommand = commandHandlerFactory.createEnterCommandHandler();
+                LeaveCommandHandler leaveCommand = commandHandlerFactory.createLeaveCommandHandler();
+                SendMessageCommandHandler sendMessageCommand = commandHandlerFactory.createSendMessageCommandHandler();
 
                 sendMessageCommand.setNext(enterCommand);
                 enterCommand.setNext(leaveCommand);
                 command = new ChatCommand(this.connection.getId(), this.connection.receiveLine());
-                sendMessageCommand.execute(command);
+                sendMessageCommand.handle(command);
             }
         }
+
+        this.activeConnections.remove(this.connection);
     }
 }

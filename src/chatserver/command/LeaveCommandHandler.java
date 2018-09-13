@@ -3,17 +3,17 @@ package chatserver.command;
 import chatserver.chat.ChatRoom;
 import chatserver.message.MessageSender;
 
-public class LeaveCommandExecuter extends ChatCommandExecuter {
+public class LeaveCommandHandler extends ChatCommandHandler {
     private ChatRoom chatRoom;
     private MessageSender messageSender;
 
-    public LeaveCommandExecuter(ChatRoom chatRoom, MessageSender messageSender) {
+    public LeaveCommandHandler(ChatRoom chatRoom, MessageSender messageSender) {
         this.chatRoom = chatRoom;
         this.messageSender = messageSender;
     }
 
     @Override
-    public void execute(ChatCommand command) {
+    public void handle(ChatCommand command) {
 
     }
 }

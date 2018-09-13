@@ -3,32 +3,25 @@ package chatserver.message;
 import chatserver.util.SocketConnection;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageSender {
-    private ArrayList<SocketConnection> connections;
+    private List<SocketConnection> activeConnections;
 
-    public MessageSender() {
-        this.connections = new ArrayList<>();
+    public MessageSender(List<SocketConnection> activeConnections) {
+        this.activeConnections = activeConnections;
     }
 
     private SocketConnection findConnectionById(String id) {
         SocketConnection connection = null;
 
-        for (SocketConnection conn : this.connections)
+        for (SocketConnection conn : this.activeConnections)
             if (conn.getId() == id) {
                 connection = conn;
                 break;
             }
 
         return connection;
-    }
-
-    public void addConection(SocketConnection connection) {
-        this.connections.add(connection);
-    }
-
-    public void removeConnection(SocketConnection connection) {
-        this.connections.remove(connection);
     }
 
     public void sendMessage(String receiverId, String message) {
