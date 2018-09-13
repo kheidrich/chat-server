@@ -32,6 +32,10 @@ public class ChatRoom {
         return false;
     }
 
+    public User[] getUsers() {
+        return (User[]) this.users.toArray();
+    }
+
     public User getUserByConnectionId(String id) {
         for (User u : this.users)
             if (u.getConnectionId() == id) return u;

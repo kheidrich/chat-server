@@ -5,11 +5,11 @@ import java.util.List;
 
 public class ChatCommand {
     private String senderId;
-    private String command;
+    private String args;
 
-    public ChatCommand(String senderId, String command) {
+    public ChatCommand(String senderId, String args) {
         this.senderId = senderId;
-        this.command = command;
+        this.args = args;
     }
 
     public String getSenderId() {
@@ -17,11 +17,11 @@ public class ChatCommand {
     }
 
     public String getType() {
-        return this.command.split(" ")[0];
+        return this.args.split(" ")[0];
     }
 
-    public String[] getArgs() {
-        List<String> splitedCommand = Arrays.asList(this.command.split(" "));
+    public String[] getParameters() {
+        List<String> splitedCommand = Arrays.asList(this.args.split(" "));
         String[] args;
 
         splitedCommand.remove(0);
