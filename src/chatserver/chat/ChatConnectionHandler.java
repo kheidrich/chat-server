@@ -1,22 +1,26 @@
 package chatserver.chat;
 
 import chatserver.command.*;
+import chatserver.command.execute.ChatCommandExecuterFactory;
+import chatserver.command.execute.EnterCommandExecuter;
+import chatserver.command.execute.LeaveCommandExecuter;
+import chatserver.command.execute.SendMessageCommandExecuter;
 import chatserver.util.SocketConnection;
 
 import java.util.List;
 
 public class ChatConnectionHandler implements Runnable {
     private SocketConnection connection;
-    private ChatCommandHandlerFactory commandHandlerFactory;
+    private ChatCommandExecuterFactory commandExecuterFactory;
     private List<SocketConnection> activeConnections;
 
     public ChatConnectionHandler(
             SocketConnection connection,
-            ChatCommandHandlerFactory commandHandlerFactory,
+            ChatCommandExecuterFactory commandExecuterFactory,
             List<SocketConnection> activeConnections
     ) {
         this.connection = connection;
-        this.commandHandlerFactory = commandHandlerFactory;
+        this.commandExecuterFactory = commandExecuterFactory;
         this.activeConnections = activeConnections;
     }
 
@@ -27,9 +31,9 @@ public class ChatConnectionHandler implements Runnable {
         while (this.connection.isConnected()) {
             if (this.connection.hasDataToReceive()) {
                 ChatCommand command;
-                EnterCommandHandler enterCommand = commandHandlerFactory.createEnterCommandHandler();
-                LeaveCommandHandler leaveCommand = commandHandlerFactory.createLeaveCommandHandler();
-                SendMessageCommandHandler sendMessageCommand = commandHandlerFactory.createSendMessageCommandHandler();
+                EnterCommandExecuter enterCommand = commandExecuterFactory.createEnterCommandExecuter();
+                LeaveCommandExecuter leaveCommand = commandExecuterFactory.createLeaveCommandExecuter();
+                SendMessageCommandExecuter sendMessageCommand = commandExecuterFactory.createSendMessageCommandExecuter();
 
                 sendMessageCommand.setNext(enterCommand);
                 enterCommand.setNext(leaveCommand);
