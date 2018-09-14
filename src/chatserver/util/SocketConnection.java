@@ -27,7 +27,7 @@ public class SocketConnection {
             boolean has;
 
             has = input.hasNextLine();
-            input.close();
+//            input.close();
 
             return has;
         }
@@ -44,7 +44,7 @@ public class SocketConnection {
             String line;
 
             line = input.nextLine();
-            input.close();
+//            input.close();
 
             return line;
         }

@@ -20,14 +20,7 @@ public class ChatCommand {
         return this.args.split(" ")[0];
     }
 
-    public String[] getParameters() {
-        List<String> splitedCommand = Arrays.asList(this.args.split(" "));
-        String[] args;
-
-        splitedCommand.remove(0);
-        args = new String[splitedCommand.size()];
-        splitedCommand.toArray(args);
-
-        return args;
+    public String getParameter() {
+        return this.args.split(" ", 2)[1];
     }
 }

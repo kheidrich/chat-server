@@ -15,7 +15,7 @@ public class MessageLogger {
 
     }
 
-    public String[] getLastMessafges(int quantity) {
+    public Message[] getLastMessages(int quantity) {
         return null;
     }
 }

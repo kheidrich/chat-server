@@ -14,7 +14,7 @@ public class NicknameAvaibilityChecker extends ChatCommandHandler {
     @Override
     public void handle(ChatCommand command) {
         if (command.getType() == "ENTRAR") {
-            String nickname = command.getParameters()[0];
+            String nickname = command.getParameter();
 
             if (this.chatRoom.isNicknameInUse(nickname)) {
                 this.messageSender.sendErrorMessage(command.getSenderId(), "Existe outro cliente com o mesmo nickname");

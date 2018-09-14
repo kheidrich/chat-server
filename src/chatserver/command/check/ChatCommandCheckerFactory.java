@@ -12,6 +12,10 @@ public class ChatCommandCheckerFactory {
         this.messageSender = messageSender;
     }
 
+    public InvalidCommandChecker createInvalidCommandChecker() {
+        return new InvalidCommandChecker(this.chatRoom, this.messageSender);
+    }
+
     public RoomAvaibilityChecker createRoomAvaibilityChecker() {
         return new RoomAvaibilityChecker(this.chatRoom, this.messageSender);
     }
@@ -22,5 +26,9 @@ public class ChatCommandCheckerFactory {
 
     public ReenterRoomChecker createReenterRoomChecker() {
         return new ReenterRoomChecker(this.chatRoom, this.messageSender);
+    }
+
+    public ClientJoinedRoomChecker createClientJoinedRoomChecker() {
+        return  new ClientJoinedRoomChecker(this.chatRoom, this.messageSender);
     }
 }

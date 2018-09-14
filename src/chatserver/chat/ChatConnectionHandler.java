@@ -1,47 +1,60 @@
 package chatserver.chat;
 
 import chatserver.command.*;
-import chatserver.command.execute.ChatCommandExecuterFactory;
-import chatserver.command.execute.EnterCommandExecuter;
-import chatserver.command.execute.LeaveCommandExecuter;
-import chatserver.command.execute.SendMessageCommandExecuter;
+import chatserver.command.check.*;
+import chatserver.command.execute.*;
 import chatserver.util.SocketConnection;
 
 import java.util.List;
 
 public class ChatConnectionHandler implements Runnable {
     private SocketConnection connection;
-    private ChatCommandExecuterFactory commandExecuterFactory;
     private List<SocketConnection> activeConnections;
+    private ChatCommandExecuterFactory commandExecuterFactory;
+    private ChatCommandCheckerFactory commandCheckerFactory;
 
     public ChatConnectionHandler(
             SocketConnection connection,
+            List<SocketConnection> activeConnections,
             ChatCommandExecuterFactory commandExecuterFactory,
-            List<SocketConnection> activeConnections
+            ChatCommandCheckerFactory commandCheckerFactory
     ) {
         this.connection = connection;
-        this.commandExecuterFactory = commandExecuterFactory;
         this.activeConnections = activeConnections;
+        this.commandExecuterFactory = commandExecuterFactory;
+        this.commandCheckerFactory = commandCheckerFactory;
     }
 
     @Override
     public void run() {
-        this.activeConnections.add(this.connection);
+        EnterCommandExecuter enterCommandExecuter = commandExecuterFactory.createEnterCommandExecuter();
+        LeaveCommandExecuter leaveCommandExecuter = commandExecuterFactory.createLeaveCommandExecuter();
+        SendMessageCommandExecuter sendMessageCommandExecuter = commandExecuterFactory.createSendMessageCommandExecuter();
+        InvalidCommandChecker invalidCommandChecker = commandCheckerFactory.createInvalidCommandChecker();
+        RoomAvaibilityChecker roomAvaibilityChecker = commandCheckerFactory.createRoomAvaibilityChecker();
+        NicknameAvaibilityChecker nicknameAvaibilityChecker = commandCheckerFactory.createNicknameAvaibilityChecker();
+        ReenterRoomChecker reenterRoomChecker = commandCheckerFactory.createReenterRoomChecker();
+        ClientJoinedRoomChecker clientJoinedRoomChecker = commandCheckerFactory.createClientJoinedRoomChecker();
 
+        invalidCommandChecker.setNext(roomAvaibilityChecker);
+        roomAvaibilityChecker.setNext(nicknameAvaibilityChecker);
+        nicknameAvaibilityChecker.setNext(reenterRoomChecker);
+        reenterRoomChecker.setNext(enterCommandExecuter);
+        enterCommandExecuter.setNext(clientJoinedRoomChecker);
+        clientJoinedRoomChecker.setNext(sendMessageCommandExecuter);
+        sendMessageCommandExecuter.setNext(leaveCommandExecuter);
+        leaveCommandExecuter.setNext(roomAvaibilityChecker);
+
+        this.activeConnections.add(this.connection);
         while (this.connection.isConnected()) {
             if (this.connection.hasDataToReceive()) {
                 ChatCommand command;
-                EnterCommandExecuter enterCommand = commandExecuterFactory.createEnterCommandExecuter();
-                LeaveCommandExecuter leaveCommand = commandExecuterFactory.createLeaveCommandExecuter();
-                SendMessageCommandExecuter sendMessageCommand = commandExecuterFactory.createSendMessageCommandExecuter();
 
-                sendMessageCommand.setNext(enterCommand);
-                enterCommand.setNext(leaveCommand);
+
                 command = new ChatCommand(this.connection.getId(), this.connection.receiveLine());
-                sendMessageCommand.handle(command);
+                invalidCommandChecker.handle(command);
             }
         }
-
         this.activeConnections.remove(this.connection);
     }
 }

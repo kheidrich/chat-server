@@ -40,4 +40,8 @@ public class ChatRoom {
 
         return null;
     }
+
+    public boolean hasUserJoined(String connectionId){
+        return this.getUserByConnectionId(connectionId) != null;
+    }
 }
