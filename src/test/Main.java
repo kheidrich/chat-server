@@ -1,5 +1,6 @@
 package test;
 
+import chatserver.Main;
 import chatserver.util.SocketConnection;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ public class Teste {
         try {
             SocketConnection client = new SocketConnection(new Socket("localhost", 8976));
 
-            client.sendLine("WTF");
+            client.sendLine("MSG dsdadadad");
             while (!client.hasDataToReceive());
             System.out.println(client.receiveLine());
         }

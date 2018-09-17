@@ -50,7 +50,6 @@ public class ChatConnectionHandler implements Runnable {
             if (this.connection.hasDataToReceive()) {
                 ChatCommand command;
 
-
                 command = new ChatCommand(this.connection.getId(), this.connection.receiveLine());
                 invalidCommandChecker.handle(command);
             }

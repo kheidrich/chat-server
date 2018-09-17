@@ -16,7 +16,7 @@ public class MessageSender {
         SocketConnection connection = null;
 
         for (SocketConnection conn : this.activeConnections)
-            if (conn.getId() == id) {
+            if (conn.getId().equals(id)) {
                 connection = conn;
                 break;
             }
