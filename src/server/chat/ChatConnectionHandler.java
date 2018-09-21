@@ -1,21 +1,20 @@
-package chatserver.chat;
+package server.chat;
 
-import chatserver.command.*;
-import chatserver.command.check.*;
-import chatserver.command.execute.*;
-import chatserver.util.SocketConnection;
-
-import java.util.List;
+import server.command.*;
+import server.command.check.*;
+import server.command.execute.*;
+import server.util.ActiveConnectionsList;
+import server.util.SocketConnection;
 
 public class ChatConnectionHandler implements Runnable {
     private SocketConnection connection;
-    private List<SocketConnection> activeConnections;
+    private ActiveConnectionsList activeConnections;
     private ChatCommandExecuterFactory commandExecuterFactory;
     private ChatCommandCheckerFactory commandCheckerFactory;
 
     public ChatConnectionHandler(
             SocketConnection connection,
-            List<SocketConnection> activeConnections,
+            ActiveConnectionsList activeConnections,
             ChatCommandExecuterFactory commandExecuterFactory,
             ChatCommandCheckerFactory commandCheckerFactory
     ) {
@@ -45,8 +44,8 @@ public class ChatConnectionHandler implements Runnable {
         sendMessageCommandExecuter.setNext(leaveCommandExecuter);
         leaveCommandExecuter.setNext(roomAvaibilityChecker);
 
-        this.activeConnections.add(this.connection);
-        while (this.connection.isConnected()) {
+        this.activeConnections.addConnection(this.connection);
+        while (!this.connection.isClosed()) {
             if (this.connection.hasDataToReceive()) {
                 ChatCommand command;
 
@@ -54,6 +53,7 @@ public class ChatConnectionHandler implements Runnable {
                 invalidCommandChecker.handle(command);
             }
         }
-        this.activeConnections.remove(this.connection);
+        this.activeConnections.removeConnection(this.connection);
+        System.out.println(this.connection.getId() + " closed");
     }
 }

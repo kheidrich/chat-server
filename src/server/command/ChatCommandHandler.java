@@ -1,7 +1,7 @@
-package chatserver.command;
+package server.command;
 
-import chatserver.chat.ChatRoom;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.message.MessageSender;
 
 public abstract class ChatCommandHandler {
     protected ChatRoom chatRoom;

@@ -1,7 +1,4 @@
-package chatserver.command;
-
-import java.util.Arrays;
-import java.util.List;
+package server.command;
 
 public class ChatCommand {
     private String senderId;

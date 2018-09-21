@@ -1,17 +1,22 @@
-package chatserver.command.execute;
+package server.command.execute;
 
-import chatserver.chat.ChatRoom;
-import chatserver.chat.User;
-import chatserver.command.ChatCommand;
-import chatserver.command.ChatCommandHandler;
-import chatserver.message.MessageSender;
-
-import java.net.Socket;
+import server.chat.ChatRoom;
+import server.chat.User;
+import server.command.ChatCommand;
+import server.command.ChatCommandHandler;
+import server.message.MessageSender;
+import server.util.ActiveConnectionsList;
 
 public class LeaveCommandExecuter extends ChatCommandHandler {
+    private ActiveConnectionsList activeConnections;
 
-    public LeaveCommandExecuter(ChatRoom chatRoom, MessageSender messageSender) {
+    public LeaveCommandExecuter(
+            ChatRoom chatRoom,
+            MessageSender messageSender,
+            ActiveConnectionsList activeConnectionsList
+    ) {
         super(chatRoom, messageSender);
+        this.activeConnections = activeConnectionsList;
     }
 
     private void communicateUserLeavedRoom(String nickname){
@@ -23,9 +28,10 @@ public class LeaveCommandExecuter extends ChatCommandHandler {
     public void handle(ChatCommand command) {
         User user;
 
-        if(command.getType() == "SAIR") {
+        if(command.getType().equals("SAIR")) {
             user = this.chatRoom.getUserByConnectionId(command.getSenderId());
             this.chatRoom.leave(user);
+            this.activeConnections.findById(user.getConnectionId()).close();
             this.communicateUserLeavedRoom(user.getNickname());
 
             return;

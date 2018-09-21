@@ -1,6 +1,4 @@
-package chatserver.chat;
-
-import chatserver.message.MessageSender;
+package server.chat;
 
 import java.util.ArrayList;
 
@@ -25,23 +23,26 @@ public class ChatRoom {
 
     public boolean isNicknameInUse(String nickname) {
         for (User u : this.users)
-            if (u.getNickname() == nickname) return true;
+            if (u.getNickname().equals(nickname)) return true;
 
         return false;
     }
 
     public User[] getUsers() {
-        return (User[]) this.users.toArray();
+        User[] destination = new User[this.users.size()];
+
+        this.users.toArray(destination);
+        return destination;
     }
 
     public User getUserByConnectionId(String id) {
         for (User u : this.users)
-            if (u.getConnectionId() == id) return u;
+            if (u.getConnectionId().equals(id)) return u;
 
         return null;
     }
 
-    public boolean hasUserJoined(String connectionId){
+    public boolean hasUserJoined(String connectionId) {
         return this.getUserByConnectionId(connectionId) != null;
     }
 }

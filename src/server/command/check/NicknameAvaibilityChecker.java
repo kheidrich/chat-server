@@ -1,9 +1,9 @@
-package chatserver.command.check;
+package server.command.check;
 
-import chatserver.chat.ChatRoom;
-import chatserver.command.ChatCommand;
-import chatserver.command.ChatCommandHandler;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.command.ChatCommand;
+import server.command.ChatCommandHandler;
+import server.message.MessageSender;
 
 public class NicknameAvaibilityChecker extends ChatCommandHandler {
 
@@ -13,7 +13,7 @@ public class NicknameAvaibilityChecker extends ChatCommandHandler {
 
     @Override
     public void handle(ChatCommand command) {
-        if (command.getType() == "ENTRAR") {
+        if (command.getType().equals("ENTRAR")) {
             String nickname = command.getParameter();
 
             if (this.chatRoom.isNicknameInUse(nickname)) {

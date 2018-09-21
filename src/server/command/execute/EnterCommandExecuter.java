@@ -1,12 +1,12 @@
-package chatserver.command.execute;
+package server.command.execute;
 
-import chatserver.chat.ChatRoom;
-import chatserver.chat.Message;
-import chatserver.chat.User;
-import chatserver.command.ChatCommand;
-import chatserver.command.ChatCommandHandler;
-import chatserver.message.MessageLogger;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.chat.Message;
+import server.chat.User;
+import server.command.ChatCommand;
+import server.command.ChatCommandHandler;
+import server.message.MessageLogger;
+import server.message.MessageSender;
 
 public class EnterCommandExecuter extends ChatCommandHandler {
     private MessageLogger messageLogger;
@@ -30,9 +30,10 @@ public class EnterCommandExecuter extends ChatCommandHandler {
 
     @Override
     public void handle(ChatCommand command) {
-        String nickname = command.getParameter();
 
-        if (command.getType() == "ENTRAR") {
+        if (command.getType().equals("ENTRAR")) {
+            String nickname = command.getParameter();
+
             this.communicateUserJoinedRoom(nickname);
             this.sendMessageHistoryToUser(command.getSenderId());
             this.chatRoom.enter(new User(command.getSenderId(), nickname));

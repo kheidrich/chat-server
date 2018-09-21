@@ -1,19 +1,26 @@
-package chatserver.command.execute;
+package server.command.execute;
 
-import chatserver.chat.ChatRoom;
-import chatserver.command.check.InvalidCommandChecker;
-import chatserver.message.MessageLogger;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.message.MessageLogger;
+import server.message.MessageSender;
+import server.util.ActiveConnectionsList;
 
 public class ChatCommandExecuterFactory {
     private ChatRoom chatRoom;
     private MessageSender messageSender;
     private MessageLogger messageLogger;
+    private ActiveConnectionsList activeConnections;
 
-    public ChatCommandExecuterFactory(ChatRoom chatRoom, MessageSender messageSender, MessageLogger messageLogger) {
+    public ChatCommandExecuterFactory(
+            ChatRoom chatRoom,
+            MessageSender messageSender,
+            MessageLogger messageLogger,
+            ActiveConnectionsList activeConnections
+    ) {
         this.chatRoom = chatRoom;
         this.messageSender = messageSender;
         this.messageLogger = messageLogger;
+        this.activeConnections = activeConnections;
     }
 
     public SendMessageCommandExecuter createSendMessageCommandExecuter() {
@@ -25,7 +32,7 @@ public class ChatCommandExecuterFactory {
     }
 
     public LeaveCommandExecuter createLeaveCommandExecuter() {
-        return new LeaveCommandExecuter(this.chatRoom, this.messageSender);
+        return new LeaveCommandExecuter(this.chatRoom, this.messageSender, this.activeConnections);
     }
 
 

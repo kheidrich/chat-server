@@ -1,7 +1,4 @@
-package chatserver.chat;
-
-import chatserver.command.*;
-import chatserver.util.SocketConnection;
+package server.chat;
 
 public class User {
     private String connectionId;

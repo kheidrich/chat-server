@@ -1,9 +1,9 @@
-package chatserver.command.check;
+package server.command.check;
 
-import chatserver.chat.ChatRoom;
-import chatserver.command.ChatCommand;
-import chatserver.command.ChatCommandHandler;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.command.ChatCommand;
+import server.command.ChatCommandHandler;
+import server.message.MessageSender;
 
 public class ClientJoinedRoomChecker extends ChatCommandHandler {
     public ClientJoinedRoomChecker(ChatRoom chatRoom, MessageSender messageSender) {

@@ -1,9 +1,9 @@
-package chatserver.command.check;
+package server.command.check;
 
-import chatserver.chat.ChatRoom;
-import chatserver.command.ChatCommand;
-import chatserver.command.ChatCommandHandler;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.command.ChatCommand;
+import server.command.ChatCommandHandler;
+import server.message.MessageSender;
 
 public class RoomAvaibilityChecker extends ChatCommandHandler {
 
@@ -13,7 +13,7 @@ public class RoomAvaibilityChecker extends ChatCommandHandler {
 
     @Override
     public void handle(ChatCommand command) {
-        if (command.getType() == "ENTRAR" && this.chatRoom.isFull()) {
+        if (command.getType().equals("ENTRAR") && this.chatRoom.isFull()) {
             this.messageSender.sendErrorMessage(command.getSenderId(), "Sala está cheia");
             return;
         }

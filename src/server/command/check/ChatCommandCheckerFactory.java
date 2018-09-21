@@ -1,7 +1,7 @@
-package chatserver.command.check;
+package server.command.check;
 
-import chatserver.chat.ChatRoom;
-import chatserver.message.MessageSender;
+import server.chat.ChatRoom;
+import server.message.MessageSender;
 
 public class ChatCommandCheckerFactory {
     private ChatRoom chatRoom;
