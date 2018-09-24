@@ -6,21 +6,27 @@ import server.command.ChatCommandHandler;
 import server.message.MessageSender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class InvalidCommandChecker extends ChatCommandHandler {
+    private final ArrayList<String> validCommands;
+
     public InvalidCommandChecker(ChatRoom chatRoom, MessageSender messageSender) {
         super(chatRoom, messageSender);
+        this.validCommands = new ArrayList<>(Arrays.asList("ENTRAR", "MSG", "SAIR"));
     }
 
     @Override
     public void handle(ChatCommand command) {
-        ArrayList<String> validCommands = new ArrayList<>();
+        boolean enterWithoutNickname;
+        boolean messageWithoutContent;
+        boolean commandExists;
 
-        validCommands.add("ENTRAR");
-        validCommands.add("MSG");
-        validCommands.add("SAIR");
+        commandExists = validCommands.contains(command.getType());
+        enterWithoutNickname = command.getType().equals("ENTRAR") && command.getParameter().equals("");
+        messageWithoutContent = command.getType().equals("MSG") && command.getParameter().equals("");
 
-        if (!validCommands.contains(command.getType())) {
+        if (!commandExists || enterWithoutNickname || messageWithoutContent) {
             this.messageSender.sendErrorMessage(command.getSenderId(), "Comando inválido");
             return;
         }

@@ -4,6 +4,7 @@ import server.chat.Message;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MessageLogger {
     private File logFile;
@@ -12,36 +13,40 @@ public class MessageLogger {
         this.logFile = logFile;
     }
 
+    private Message parseMessage(String line) {
+        String sender, content;
+
+        sender = line.split(" ", 2)[0];
+        content = line.split(" ", 2)[1];
+
+        return new Message(sender, content);
+    }
+
     private ArrayList<Message> readLog() {
-        ObjectInputStream logReader = null;
-        ArrayList<Message> messages;
+        Scanner logReader = null;
+        ArrayList<Message> messages = new ArrayList<>();
 
         try {
-            logReader = new ObjectInputStream(new FileInputStream(this.logFile));
-            messages = (ArrayList<Message>) logReader.readObject();
+            logReader = new Scanner(new FileInputStream(this.logFile));
+
+            while (logReader.hasNextLine())
+                messages.add(this.parseMessage(logReader.nextLine()));
 
             return messages;
         } catch (Exception e) {
             return new ArrayList<>();
         } finally {
-            try {
-                if (logReader != null) logReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (logReader != null) logReader.close();
         }
     }
 
 
-    public void addMessage(Message message) {
-        ObjectOutputStream logWriter;
-        ArrayList<Message> log;
+    public synchronized void addMessage(Message message) {
+        PrintWriter logWriter;
 
         try {
-            log = this.readLog();
-            log.add(message);
-            logWriter = new ObjectOutputStream(new FileOutputStream(this.logFile));
-            logWriter.writeObject(log);
+            logWriter = new PrintWriter(new FileOutputStream(this.logFile, true));
+            logWriter.println(message.getSenderNickname() + " " + message.getContent());
             logWriter.flush();
             logWriter.close();
         } catch (Exception e) {

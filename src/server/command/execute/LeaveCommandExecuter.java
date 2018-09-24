@@ -19,8 +19,8 @@ public class LeaveCommandExecuter extends ChatCommandHandler {
         this.activeConnections = activeConnectionsList;
     }
 
-    private void communicateUserLeavedRoom(String nickname){
-        for(User u : this.chatRoom.getUsers())
+    private void communicateUserLeavedRoom(String nickname) {
+        for (User u : this.chatRoom.getUsers())
             this.messageSender.sendMessage(u.getConnectionId(), nickname + " saiu do grupo");
     }
 
@@ -28,9 +28,12 @@ public class LeaveCommandExecuter extends ChatCommandHandler {
     public void handle(ChatCommand command) {
         User user;
 
-        if(command.getType().equals("SAIR")) {
+        if (command.getType().equals("SAIR")) {
             user = this.chatRoom.getUserByConnectionId(command.getSenderId());
-            this.chatRoom.leave(user);
+
+            synchronized (this.chatRoom) {
+                this.chatRoom.leave(user);
+            }
             this.activeConnections.findById(user.getConnectionId()).close();
             this.communicateUserLeavedRoom(user.getNickname());
 

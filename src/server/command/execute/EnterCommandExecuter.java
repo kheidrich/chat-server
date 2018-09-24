@@ -36,7 +36,9 @@ public class EnterCommandExecuter extends ChatCommandHandler {
 
             this.communicateUserJoinedRoom(nickname);
             this.sendMessageHistoryToUser(command.getSenderId());
-            this.chatRoom.enter(new User(command.getSenderId(), nickname));
+            synchronized (this.chatRoom) {
+                this.chatRoom.enter(new User(command.getSenderId(), nickname));
+            }
 
             return;
         }

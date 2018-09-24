@@ -35,16 +35,17 @@ public class ChatConnectionHandler implements Runnable {
         ReenterRoomChecker reenterRoomChecker = commandCheckerFactory.createReenterRoomChecker();
         ClientJoinedRoomChecker clientJoinedRoomChecker = commandCheckerFactory.createClientJoinedRoomChecker();
 
-        invalidCommandChecker.setNext(roomAvaibilityChecker);
+        invalidCommandChecker.setNext(reenterRoomChecker);
+        reenterRoomChecker.setNext(roomAvaibilityChecker);
         roomAvaibilityChecker.setNext(nicknameAvaibilityChecker);
-        nicknameAvaibilityChecker.setNext(reenterRoomChecker);
-        reenterRoomChecker.setNext(enterCommandExecuter);
+        nicknameAvaibilityChecker.setNext(enterCommandExecuter);
         enterCommandExecuter.setNext(clientJoinedRoomChecker);
         clientJoinedRoomChecker.setNext(sendMessageCommandExecuter);
         sendMessageCommandExecuter.setNext(leaveCommandExecuter);
-        leaveCommandExecuter.setNext(roomAvaibilityChecker);
 
-        this.activeConnections.addConnection(this.connection);
+        synchronized (this.activeConnections) {
+            this.activeConnections.addConnection(this.connection);
+        }
         while (!this.connection.isClosed()) {
             if (this.connection.hasDataToReceive()) {
                 ChatCommand command;
@@ -53,7 +54,8 @@ public class ChatConnectionHandler implements Runnable {
                 invalidCommandChecker.handle(command);
             }
         }
-        this.activeConnections.removeConnection(this.connection);
-        System.out.println(this.connection.getId() + " closed");
+        synchronized (this.activeConnections) {
+            this.activeConnections.removeConnection(this.connection);
+        }
     }
 }

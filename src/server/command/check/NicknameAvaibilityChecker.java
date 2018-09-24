@@ -17,7 +17,7 @@ public class NicknameAvaibilityChecker extends ChatCommandHandler {
             String nickname = command.getParameter();
 
             if (this.chatRoom.isNicknameInUse(nickname)) {
-                this.messageSender.sendErrorMessage(command.getSenderId(), "Existe outro cliente com o mesmo nickname");
+                this.messageSender.sendErrorMessage(command.getSenderId(), "Existe outro usuário com o mesmo nickname");
                 return;
             }
         }
